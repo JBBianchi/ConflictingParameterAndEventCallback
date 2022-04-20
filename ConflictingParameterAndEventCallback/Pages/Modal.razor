@@ -1,0 +1,70 @@
+﻿<div class="modal fade @(Active ? "show d-block" : "d-none")" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Workflow definition</h5>
+                <button type="button" class="close btn" data-dismiss="modal" aria-label="Close" @onclick="Hide">
+                    <span class="oi oi-x"></span>
+                </button>                
+            </div>
+            <div class="modal-body">
+                <EditForm Model="@model" OnValidSubmit="@OnSubmitAsync">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <InputText @bind-Value="model.Name" id="name" class="form-control" placeholder="Name" />
+                        <ValidationMessage For="@(() => model.Name)" class="form-text" />
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-dark " type="submit">Submit</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+@if (Active)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    [Parameter]
+    public bool Active { get; set; } = false;
+
+    [Parameter]
+    public DummyModel Model { get; set; } = new DummyModel();
+    protected DummyModel model = new DummyModel();
+
+    [Parameter]
+    public EventCallback<DummyModel> OnSaveModel { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        this.model = new DummyModel(this.Model.Name);
+    }
+
+    protected async Task OnSubmitAsync()
+    {
+        await this.OnSaveModel.InvokeAsync(this.model);
+        this.Hide();
+        Console.WriteLine(this.Active);
+    }
+
+    public void Toggle()
+    {
+        this.Active = !this.Active;
+    }
+
+    public void Show()
+    {
+        this.Active = true;
+    }
+
+    public void Hide()
+    {
+        this.Active = false;
+    }
+}

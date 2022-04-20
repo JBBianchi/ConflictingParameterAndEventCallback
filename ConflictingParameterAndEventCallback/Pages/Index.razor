@@ -1,0 +1,15 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<Modal Active="true" Model="model" OnSaveModel="OnSaveModel" />
+@code {
+    protected DummyModel model = new DummyModel();
+
+    protected void OnSaveModel(DummyModel model)
+    {
+        this.model = new DummyModel(model.Name);
+    }
+}
